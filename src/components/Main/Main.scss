@@ -1,0 +1,43 @@
+.wrapperMain {
+  position: relative;
+  top: 400px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.balanc {
+  background-color: rgba(80, 87, 89, 1);
+  border-radius: 2rem;
+  width: 310px;
+  height: 420px;
+}
+
+.tariff {
+  background-color: rgba(217, 217, 214, 1);
+  border-radius: 2rem;
+  width: 816px;
+  height: 553px;
+}
+
+.white-progress-line {
+  height: 5px;
+  background-color: rgb(185, 185, 185);
+}
+
+.progress-line-internet {
+  width: 20%;
+  height: 5px;
+  background-color: rgb(0, 0, 0);
+}
+
+.progress-line-minutes {
+  width: 50%;
+  height: 5px;
+  background-color: rgb(0, 0, 0);
+}
+
+.progress-line-sms {
+  width: 98%;
+  height: 5px;
+  background-color: rgb(0, 0, 0);
+}
