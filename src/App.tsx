@@ -1,11 +1,17 @@
+import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header/Header";
-import Main from "./components/Main/Main";
+import PersonalAccount from "./screens/PersonalAccount/PersonalAccount";
+import BIlling from "./screens/Billing/Billing";
+//import { Routes, Route, Link } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Header></Header>
-      <Main></Main>
+      <Header />
+      <Routes>
+        <Route path="/" element={<PersonalAccount />} />
+        <Route path="/Billing" element={<BIlling />} />
+      </Routes>
     </>
   );
 }
