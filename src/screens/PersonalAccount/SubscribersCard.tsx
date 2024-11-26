@@ -1,18 +1,10 @@
+import { ModelReplenishment } from "@/components/model/ModelReplenishment/ModelReplenishment.tsx";
 import { Button } from "@/components/ui/button.tsx";
-
-interface Phone {
-  id: number;
-  id_user: number;
-  number: string;
-  active: boolean;
-  balance: number;
-}
-
-interface SubscribersCardProps {
-  phone: Phone;
-}
+import { useState } from "react";
+import { SubscribersCardProps } from "./types";
 
 const SubscribersCard: React.FC<SubscribersCardProps> = ({ phone }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <div className="balanc ml-28 mr-20 relative">
       <p className="phone-number text-xl pt-12 pl-8 text-white">
@@ -22,9 +14,19 @@ const SubscribersCard: React.FC<SubscribersCardProps> = ({ phone }) => {
         <h2 className="balance-amount text-3xl text-white">
           {phone.balance.toFixed(2)} ₽
         </h2>
-        <Button className="mt-3" variant="destructive">
+        <Button
+          className="mt-3"
+          variant="destructive"
+          onClick={() => setIsOpen(true)}
+        >
           Пополнить
         </Button>
+
+        <ModelReplenishment
+          phone={phone}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
       </div>
     </div>
   );

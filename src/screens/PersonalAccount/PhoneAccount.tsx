@@ -1,18 +1,6 @@
 import "./PersonalAccount.scss";
 import "./PersonalAccount-media.scss";
-
-interface Phone {
-  id: number;
-  id_user: number;
-  number: string;
-  active: boolean;
-  balance: number;
-}
-
-interface PhoneAccountProps {
-  phoneNumbers: Phone[];
-  onPhoneClick: (phone: Phone) => void;
-}
+import { PhoneAccountProps } from "./types";
 
 const PhoneAccount: React.FC<PhoneAccountProps> = ({
   phoneNumbers,
@@ -25,7 +13,7 @@ const PhoneAccount: React.FC<PhoneAccountProps> = ({
           <button
             key={phone.id}
             onClick={() => onPhoneClick(phone)}
-            className="phoneAccount border border-black bg-slate-300 w-44 h-11  mb-10 ml-5"
+            className="button-phone text-black bg-slate-300 w-44 h-11 mb-10 ml-5"
           >
             <p>{phone.number}</p>
           </button>
