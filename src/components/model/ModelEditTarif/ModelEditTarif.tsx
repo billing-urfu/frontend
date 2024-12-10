@@ -34,25 +34,39 @@ export const ModelEditTarif: React.FC<ModelEdit> = ({
   };
 
   const handleConfirm = async () => {
+    console.log({
+      id_phone: idPhone,
+      internet: valueOpt.valueInt,
+      sms: valueOpt.valueSms,
+      minutes: valueOpt.valueMin,
+      money: totalCost,
+    });
     try {
-      const response = await api.put("http://localhost:8080/userTarif/", {
-        id_phone: idPhone,
-        internet: valueOpt.valueInt,
-        sms: valueOpt.valueSms,
-        minutes: valueOpt.valueMin,
-        money: totalCost,
-      });
+      const response = await api.put(
+        "/userTarif/",
+        {
+          id_phone: idPhone,
+          internet: valueOpt.valueInt,
+          sms: valueOpt.valueSms,
+          minutes: valueOpt.valueMin,
+          money: totalCost,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (response.status === 200) {
+      if (response && response.status === 200) {
         alert("Тариф успешно обновлен!");
+        window.location.reload();
         onClose();
       } else {
         console.error("Ошибка при обновлении тарифа:", response);
-        alert("Ошибка при обновлении тарифа. Попробуйте позже.");
       }
     } catch (error) {
       console.error("Ошибка при выполнении запроса:", error);
-      alert("Не удалось обновить тариф. Проверьте подключение к серверу.");
     }
   };
 

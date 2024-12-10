@@ -95,7 +95,6 @@ const LoginformEmail: React.FC = () => {
       if (response.status === 200) {
         const { accessToken, token } = response.data;
         localStorage.setItem("accessToken", accessToken);
-        console.log(`Refrash token: ${accessToken}`);
         localStorage.setItem("refreshToken", token);
         alert("Авторизация успешна!");
 
@@ -137,7 +136,7 @@ const LoginformEmail: React.FC = () => {
             disabled={loading}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded w-full"
           >
-            {loading ? "Отправка..." : "Отправить"}
+            {loading ? "Отправка..." : "Через почту"}
           </button>
           <a
             className="flex mt-1 w-full bg-blue-500 rounded"

@@ -1,11 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header/Header";
 import PersonalAccount from "./screens/PersonalAccount/PersonalAccount";
-import BIlling from "./screens/Billing/Billing";
+import BillingApp from "./screens/Billing/BillingApp";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import LoginPage from "./screens/Login/LoginPage";
-
-//import { Routes, Route, Link } from "react-router-dom";
 
 function App() {
   return (
@@ -14,18 +12,18 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route
-          path="/"
+          path="/billing"
           element={
-            <PrivateRoute>
-              <PersonalAccount />
+            <PrivateRoute requiredRole="admin">
+              <BillingApp />
             </PrivateRoute>
           }
         />
         <Route
-          path="/billing"
+          path="/"
           element={
-            <PrivateRoute>
-              <BIlling />
+            <PrivateRoute requiredRole="user">
+              <PersonalAccount />
             </PrivateRoute>
           }
         />

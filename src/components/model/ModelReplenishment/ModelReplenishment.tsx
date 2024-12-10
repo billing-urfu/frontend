@@ -14,7 +14,7 @@ export const ModelReplenishment: React.FC<ModelRep> = ({
 
   const onSubmit: SubmitHandler<FormReplenishment> = async (data) => {
     try {
-      const response = await api.post("http://localhost:8080/income/", data);
+      const response = await api.post("/income/", data);
       console.log("Response:", response.data);
     } catch (error) {
       console.error("Error:", error);
@@ -23,6 +23,7 @@ export const ModelReplenishment: React.FC<ModelRep> = ({
   const handleFormSubmit = () => {
     setValue("id_phone", phone.id);
     handleSubmit(onSubmit)();
+    window.location.reload();
   };
 
   return (

@@ -13,7 +13,6 @@ import {
   TariffValue,
   DecodedToken,
 } from "./types";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 function PersonalAccount() {
@@ -31,9 +30,7 @@ function PersonalAccount() {
   }, []);
 
   const getfetchPhoneUser = async () => {
-    const response = await api.get<UserResponse>(
-      `http://localhost:8080/users/${decoded.id}`
-    );
+    const response = await api.get<UserResponse>(`/users/${decoded.id}`);
     let phones = response.data.phones;
     phones.sort(function (a, b) {
       return a.id - b.id;
@@ -49,12 +46,18 @@ function PersonalAccount() {
   };
 
   const fetchTariffData = async (phoneId: number) => {
-    const response = await axios.get<TariffValue>(
-      `http://localhost:8080/userTarif/${phoneId}`
-    );
-    setTariffData(response.data.tarifValues);
-    setTariffRemains(response.data.currentTarifValue);
-    setTariffPrise(response.data.money);
+    try {
+      const response = await api.get<TariffValue>(`/userTarif/${phoneId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTariffData(response.data.tarifValues);
+      setTariffRemains(response.data.currentTarifValue);
+      setTariffPrise(response.data.money);
+    } catch (error: any) {
+      console.error(error.response?.data || error.message);
+    }
   };
 
   const handlePhoneClick = async (phone: Phone) => {

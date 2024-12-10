@@ -16,9 +16,7 @@ const TarifPrice: React.FC<TariffCardProps> = ({
 
   const fetchCoefficients = useCallback(async () => {
     try {
-      const response = await api.get<TarifCoefficients>(
-        "http://localhost:8080/tarif/"
-      );
+      const response = await api.get<TarifCoefficients>("/tarif/");
       setCoefficients(response.data);
     } catch (error) {
       console.error("Ошибка при загрузке коэффициентов:", error);
