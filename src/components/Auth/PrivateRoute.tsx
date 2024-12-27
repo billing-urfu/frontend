@@ -33,7 +33,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
       }
 
       try {
-        // Попробуем обновить токен
         const isRefreshed = await refreshToken();
         if (!isRefreshed) {
           setIsAuthorized(false);
@@ -41,9 +40,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
           return;
         }
 
-        // Декодируем JWT токен
         const decoded = jwtDecode<DecodedToken>(token);
-        // Если роль админ, перенаправляем на /billing
         if (decoded.role === "admin" || decoded.role === "user") {
           setRoles(decoded.role);
           setIsAuthorized(true);
@@ -64,13 +61,12 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   }, [requiredRole]);
 
   if (loading) {
-    return <div>Загрузка...</div>; // Показываем "Загрузка", пока проверка не завершена
+    return <div>Загрузка...</div>;
   }
 
-  // Если админ, перекидываем на /billing, если он пытается попасть на другую страницу
   if (
     roles == "admin" &&
-    location.pathname !== "/billing" &&
+    location.pathname == "/" &&
     localStorage.getItem("accessToken")
   ) {
     return <Navigate to="/billing" />;
@@ -83,12 +79,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
     return <Navigate to="/" />;
   }
 
-  // Если не авторизован, перенаправляем на страницу входа или на главную
   if (!isAuthorized) {
     return <Navigate to="/login" state={{ from: location }} />;
   }
 
-  // Если все ок, рендерим дочерние компоненты
   return <>{children}</>;
 };
 

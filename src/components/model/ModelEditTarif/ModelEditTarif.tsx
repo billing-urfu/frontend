@@ -80,11 +80,15 @@ export const ModelEditTarif: React.FC<ModelEdit> = ({
                 Х
               </button>
               <form onSubmit={(e) => e.preventDefault()}>
-                <p>Изменение тарифа</p>
-                <p>Настройте свой тариф: связь, интернет и смс</p>
+                <p className="text-black">Изменение тарифа</p>
+                <p className="text-black">
+                  Настройте свой тариф: связь, интернет и смс
+                </p>
                 <div className="parent-container">
                   <div className="slider-block">
-                    <p className="text-lg mb-0">{valueOpt.valueInt} ГБ</p>
+                    <p className="text-lg mb-0 text-black">
+                      {valueOpt.valueInt} ГБ
+                    </p>
                     <Slider
                       value={[valueOpt.valueInt]}
                       max={90}
@@ -99,7 +103,9 @@ export const ModelEditTarif: React.FC<ModelEdit> = ({
                 </div>
                 <div className="parent-container">
                   <div className="slider-block">
-                    <p className="text-lg mb-0">{valueOpt.valueMin} мин</p>
+                    <p className="text-lg mb-0 text-black">
+                      {valueOpt.valueMin} мин
+                    </p>
                     <Slider
                       value={[valueOpt.valueMin]}
                       max={2000}
@@ -114,7 +120,9 @@ export const ModelEditTarif: React.FC<ModelEdit> = ({
                 </div>
                 <div className="parent-container">
                   <div className="slider-block">
-                    <p className="text-lg mb-0">{valueOpt.valueSms} SMS</p>
+                    <p className="text-lg mb-0 text-black">
+                      {valueOpt.valueSms} SMS
+                    </p>
                     <Slider
                       value={[valueOpt.valueSms]}
                       max={500}

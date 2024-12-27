@@ -66,26 +66,28 @@ function PersonalAccount() {
   };
 
   return (
-    <div className="wrapperMain mt-10">
-      <div>
-        <PhoneAccount
-          phoneNumbers={phoneNumbers}
-          onPhoneClick={handlePhoneClick}
-        />
-      </div>
-      <main className="flex justify-center">
-        <div className="flex justify-center">
-          {selectedPhone && <SubscribersCard phone={selectedPhone} />}
-          <TariffCard
-            tariffPrise={tariffPrise}
-            tariffData={tariffData}
-            tariffRemains={tariffRemains}
-            money={selectedPhone?.balance || 0}
-            idPhone={selectedPhone?.id || 0}
+    <>
+      <div className="wrapperMain mt-10">
+        <div>
+          <PhoneAccount
+            phoneNumbers={phoneNumbers}
+            onPhoneClick={handlePhoneClick}
           />
         </div>
-      </main>
-    </div>
+        <main className="flex justify-center">
+          <div className="flex justify-center">
+            {selectedPhone && <SubscribersCard phone={selectedPhone} />}
+            <TariffCard
+              tariffPrise={tariffPrise}
+              tariffData={tariffData}
+              tariffRemains={tariffRemains}
+              money={selectedPhone?.balance || 0}
+              idPhone={selectedPhone?.id || 0}
+            />
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
 

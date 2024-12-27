@@ -1,11 +1,13 @@
-import "./header.scss";
-import "./header-media.scss";
 import { useEffect, useState } from "react";
+import { DecodedToken } from "./types";
 import { jwtDecode } from "jwt-decode";
 import api from "@/api/api";
-import { DecodedToken } from "./types";
 
-function Header() {
+interface Props {
+  title: string;
+}
+
+const HeaderAdmin: React.FC<Props> = ({ title }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [fullName, setFullName] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -54,39 +56,25 @@ function Header() {
   }, []);
 
   return (
-    <div className="wrapperHeader">
-      <header>
-        <div className="title">
-          <img
-            className="Alphalogo"
-            width={46}
-            height={46}
-            src="/image/Alpha_logo_red_white.svg"
-          />
-        </div>
-        {isAuthenticated && (
-          <div className="">
-            <button className="user-profile" onClick={toggleDropdown}>
-              <span>{fullName}</span>
-              <img
-                className="user"
-                width={40}
-                height={40}
-                src="/image/user1.svg"
-              />
+    <header className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg border-b border-gray-700">
+      <div className="max-w-7xl ml-24 py-4 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-2xl font-sembold text-gray-100">{title}</h1>
+      </div>
+      <div className="user-profile-wrapper">
+        <button className="user-profile" onClick={toggleDropdown}>
+          <span>{fullName}</span>
+          <img className="user" width={40} height={40} src="/image/user1.svg" />
+        </button>
+        {isDropdownVisible && (
+          <div className="dropdown-menu">
+            <button onClick={handleLogout} className="logout-button">
+              Logout
             </button>
-            {isDropdownVisible && (
-              <div className="dropdown-menu">
-                <button onClick={handleLogout} className="logout-button">
-                  Logout
-                </button>
-              </div>
-            )}
           </div>
         )}
-      </header>
-    </div>
+      </div>
+    </header>
   );
-}
+};
 
-export default Header;
+export default HeaderAdmin;

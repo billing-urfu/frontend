@@ -86,12 +86,12 @@ const TariffCard: React.FC<TariffCardProps> = ({
           </Button>
 
           <ModelEditTarif
-            valueInternet={internetValue}
-            valueMinutes={minutesValue}
-            valueSms={smsValue}
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             idPhone={idPhone}
+            valueInternet={internetValue}
+            valueMinutes={minutesValue}
+            valueSms={smsValue}
           />
         </div>
       </div>

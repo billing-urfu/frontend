@@ -8,11 +8,10 @@ import LoginPage from "./screens/Login/LoginPage";
 function App() {
   return (
     <>
-      <Header />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route
-          path="/billing"
+          path="/billing/*"
           element={
             <PrivateRoute requiredRole="admin">
               <BillingApp />
@@ -23,6 +22,7 @@ function App() {
           path="/"
           element={
             <PrivateRoute requiredRole="user">
+              <Header />
               <PersonalAccount />
             </PrivateRoute>
           }

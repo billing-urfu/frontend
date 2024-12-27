@@ -53,7 +53,7 @@ const TarifPrice: React.FC<TariffCardProps> = ({
 
   return (
     <>
-      <p className="p-5 pb-0 pl-1 mb-3 text-xl">
+      <p className="p-5 pb-0 pl-1 mb-3 text-xl text-black">
         Итого: {totalCost?.toFixed(0)} ₽/месяц
       </p>
     </>
