@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import api from "@/api/api";
 import { ModelEditTarif } from "@/components/model/ModelEditTarif/ModelEditTarif";
 import { motion } from "framer-motion";
+import { ModuleHistoryMoney } from "@/components/model/ModuleHistoryMoney/ModuleHistoryMoney";
 
 interface User {
   id: number;
@@ -29,6 +30,10 @@ interface TarifInfo {
 const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [phones, setPhones] = useState<Phone[]>([]);
+  const [isOpenHistory, setIsOpenHistory] = useState<boolean>(false);
+  const [selectedPhoneNumber, setSelectedPhoneNumber] = useState<string | null>(
+    null
+  );
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [phoneDetails, setPhoneDetails] = useState<{
     [key: number]: TarifInfo;
@@ -40,6 +45,7 @@ const Users = () => {
     valueMinutes: number;
     valueSms: number;
   } | null>(null);
+
   useEffect(() => {
     api.get("http://localhost:8080/users/").then((response) => {
       setUsers(response.data);
@@ -82,9 +88,7 @@ const Users = () => {
     (user) =>
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.surname.toLowerCase().includes(search.toLowerCase()) ||
-      user.patronymic
-        .toLocaleLowerCase()
-        .includes(search.toLocaleLowerCase()) ||
+      user.patronymic.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -126,46 +130,44 @@ const Users = () => {
     <div className="flex-1 overflow-auto relative">
       <HeaderAdmin title="Пользователи" />
       <div className="max-w-8xl mx-auto py-6 px-4 lg:px-8">
-        <motion.h1
-          className="text-2xl font-bold mb-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          Пользователи
-        </motion.h1>
         <motion.input
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 0.6 }}
           type="text"
           placeholder="Поиск по ФИО или email"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 mb-4 w-full text-black"
+          className="w-full border-gray-300 focus:ring focus:ring-blue-300 rounded-lg shadow-sm mb-4 px-4 py-2 text-gray-800"
         />
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="space-y-4"
         >
           {filteredUsers.map((user) => (
-            <div key={user.id} className="border p-4 mb-4">
+            <div
+              key={user.id}
+              className="bg-gray-800 shadow-md rounded-lg overflow-hidden transition-transform transform hover:scale-[1.02]"
+            >
               <div
-                className="cursor-pointer font-bold flex justify-between"
+                className="px-6 py-4 flex justify-between items-center cursor-pointer"
                 onClick={() => toggleUserPhones(user.id)}
               >
-                <span>{`${user.surname} ${user.name} ${user.patronymic}`}</span>
-                <span>{user.email}</span>
+                <div className="font-medium text-white">
+                  <p>{`${user.surname} ${user.name} ${user.patronymic}`}</p>
+                </div>
+                <div className="text-sm text-white">{user.email}</div>
               </div>
               {selectedUserId === user.id && (
-                <div className="mt-4">
+                <div className="bg-gray-800 px-6 py-4 space-y-4">
                   {phones
                     .filter((phone) => phone.id_user === user.id)
                     .map((phone) => (
                       <div
                         key={phone.id}
-                        className="border-b p-2 flex flex-col"
+                        className="bg-gray-800 shadow-inner rounded-lg p-4 space-y-2"
                       >
                         <div className="flex justify-between items-center">
                           <div className="flex items-center">
@@ -174,58 +176,73 @@ const Users = () => {
                                 phone.active ? "bg-green-500" : "bg-red-500"
                               }`}
                             ></span>
-                            <span>{phone.number}</span>
+                            <span className="font-medium">{phone.number}</span>
                           </div>
-                          <div>{`Баланс: ${phone.balance} руб`}</div>
+                          <div className="text-sm text-white">
+                            Баланс: {phone.balance} руб
+                          </div>
                         </div>
-
                         {phoneDetails[phone.id] && (
-                          <div className="ml-6 mt-2">
+                          <div className="space-y-2 text-sm text-white">
                             <div>
                               Интернет:{" "}
-                              {`${
-                                phoneDetails[phone.id].currentTarifValue.find(
+                              <span className="font-semibold">
+                                {phoneDetails[phone.id].currentTarifValue.find(
                                   (t) => t.name === "Интернет"
-                                )?.value || 0
-                              }/${
-                                phoneDetails[phone.id].tarifValues.find(
-                                  (t) => t.name === "Интернет"
-                                )?.value || 0
-                              } ГБ`}
+                                )?.value || 0}
+                              </span>
+                              /
+                              {phoneDetails[phone.id].tarifValues.find(
+                                (t) => t.name === "Интернет"
+                              )?.value || 0}{" "}
+                              ГБ
                             </div>
                             <div>
                               Минуты:{" "}
-                              {`${
-                                phoneDetails[phone.id].currentTarifValue.find(
+                              <span className="font-semibold">
+                                {phoneDetails[phone.id].currentTarifValue.find(
                                   (t) => t.name === "Минуты"
-                                )?.value || 0
-                              }/${
-                                phoneDetails[phone.id].tarifValues.find(
-                                  (t) => t.name === "Минуты"
-                                )?.value || 0
-                              } мин`}
+                                )?.value || 0}
+                              </span>
+                              /
+                              {phoneDetails[phone.id].tarifValues.find(
+                                (t) => t.name === "Минуты"
+                              )?.value || 0}{" "}
+                              мин
                             </div>
                             <div>
                               СМС:{" "}
-                              {`${
-                                phoneDetails[phone.id].currentTarifValue.find(
+                              <span className="font-semibold">
+                                {phoneDetails[phone.id].currentTarifValue.find(
                                   (t) => t.name === "Смс"
-                                )?.value || 0
-                              }/${
-                                phoneDetails[phone.id].tarifValues.find(
-                                  (t) => t.name === "Смс"
-                                )?.value || 0
-                              } смс`}
+                                )?.value || 0}
+                              </span>
+                              /
+                              {phoneDetails[phone.id].tarifValues.find(
+                                (t) => t.name === "Смс"
+                              )?.value || 0}{" "}
+                              смс
                             </div>
-                            <div className="mt-2">{`Тариф: ${
-                              phoneDetails[phone.id].money
-                            } руб`}</div>
-                            <button
-                              className="bg-blue-500 text-white px-4 py-2 mt-2 rounded-md"
-                              onClick={() => handleEditTarif(phone.id)}
-                            >
-                              Изменить тариф
-                            </button>
+                            <div className="text-white">
+                              Тариф: {phoneDetails[phone.id].money} руб
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-2 rounded-md"
+                                onClick={() => handleEditTarif(phone.id)}
+                              >
+                                Изменить тариф
+                              </button>
+                              <button
+                                className="bg-gray-500 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded-md"
+                                onClick={() => {
+                                  setIsOpenHistory(true);
+                                  setSelectedPhoneNumber(phone.id);
+                                }}
+                              >
+                                История баланса
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -236,6 +253,7 @@ const Users = () => {
           ))}
         </motion.div>
       </div>
+
       {editingPhone && (
         <ModelEditTarif
           isOpen={!!editingPhone}
@@ -244,6 +262,13 @@ const Users = () => {
           valueInternet={editingPhone.valueInternet}
           valueMinutes={editingPhone.valueMinutes}
           valueSms={editingPhone.valueSms}
+        />
+      )}
+      {isOpenHistory && selectedPhoneNumber && (
+        <ModuleHistoryMoney
+          isOpen={isOpenHistory}
+          onClose={() => setIsOpenHistory(false)}
+          phone={selectedPhoneNumber}
         />
       )}
     </div>

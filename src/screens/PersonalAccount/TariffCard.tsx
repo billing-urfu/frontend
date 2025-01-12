@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button.tsx";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./PersonalAccount.scss";
 import "./PersonalAccount-media.scss";
 import TarifValue from "@/components/userInfo/TarifValue";
 import { ModelEditTarif } from "@/components/model/ModelEditTarif/ModelEditTarif";
 import { TariffCardProps } from "./types";
+import axios from "axios";
 
 const TariffCard: React.FC<TariffCardProps> = ({
   tariffRemains,
@@ -39,6 +40,39 @@ const TariffCard: React.FC<TariffCardProps> = ({
   );
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [paymentDate, setPaymentDate] = useState<string>("");
+
+  // Fetch the latest payment date
+  useEffect(() => {
+    const fetchLatestPaymentDate = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/outcome/${idPhone}`
+        );
+        const data = response.data;
+
+        // Extract the latest record
+        const latestRecord = data.reduce((latest, current) =>
+          new Date(current.date) > new Date(latest.date) ? current : latest
+        );
+
+        // Format the date
+        const dateObject = new Date(latestRecord.date);
+        dateObject.setMonth(dateObject.getMonth() + 1);
+        const day = dateObject.getDate();
+        const month = new Intl.DateTimeFormat("ru-RU", {
+          month: "long",
+        }).format(dateObject);
+
+        setPaymentDate(`${day} ${month}`);
+      } catch (error) {
+        console.error("Ошибка при получении данных оплаты:", error);
+      }
+    };
+
+    fetchLatestPaymentDate();
+  }, [idPhone]);
+
   return (
     <div className="tariff mr-24 relative flex justify-between">
       <div className="tarif-price">
@@ -50,7 +84,7 @@ const TariffCard: React.FC<TariffCardProps> = ({
             {tariffPrise} ₽/месяц
           </p>
           <p className="tariff-price absolute bottom-5 pl-8 pb-12">
-            спишем 20 октября
+            спишем {paymentDate}
           </p>
         </div>
       </div>
@@ -82,7 +116,7 @@ const TariffCard: React.FC<TariffCardProps> = ({
             size="bt_more"
             onClick={() => setIsOpen(true)}
           >
-            Подробнее
+            Настроить
           </Button>
 
           <ModelEditTarif

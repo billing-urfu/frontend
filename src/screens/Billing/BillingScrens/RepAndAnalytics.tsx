@@ -41,7 +41,7 @@ const RepAndAnalytics = () => {
             }`}
             onClick={() => handleSelect3("2")}
           >
-            Графики деняг
+            Графики финансов
           </button>
         </div>
 

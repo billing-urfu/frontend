@@ -1,5 +1,3 @@
-import "./PersonalAccount.scss";
-import "./PersonalAccount-media.scss";
 import SubscribersCard from "./SubscribersCard";
 import TariffCard from "./TariffCard";
 import PhoneAccount from "./PhoneAccount";
@@ -32,10 +30,7 @@ function PersonalAccount() {
   const getfetchPhoneUser = async () => {
     const response = await api.get<UserResponse>(`/users/${decoded.id}`);
     let phones = response.data.phones;
-    phones.sort(function (a, b) {
-      return a.id - b.id;
-    });
-    console.log(phones);
+    phones.sort((a, b) => a.id - b.id);
     setPhoneNumbers(phones);
 
     if (phones.length > 0) {
@@ -66,28 +61,22 @@ function PersonalAccount() {
   };
 
   return (
-    <>
-      <div className="wrapperMain mt-10">
-        <div>
-          <PhoneAccount
-            phoneNumbers={phoneNumbers}
-            onPhoneClick={handlePhoneClick}
-          />
-        </div>
-        <main className="flex justify-center">
-          <div className="flex justify-center">
-            {selectedPhone && <SubscribersCard phone={selectedPhone} />}
-            <TariffCard
-              tariffPrise={tariffPrise}
-              tariffData={tariffData}
-              tariffRemains={tariffRemains}
-              money={selectedPhone?.balance || 0}
-              idPhone={selectedPhone?.id || 0}
-            />
-          </div>
-        </main>
-      </div>
-    </>
+    <div className="mt-10 p-4 space-y-6">
+      <PhoneAccount
+        phoneNumbers={phoneNumbers}
+        onPhoneClick={handlePhoneClick}
+      />
+      <main className="flex flex-wrap justify-center space-y-6 md:space-y-0 md:space-x-6">
+        {selectedPhone && <SubscribersCard phone={selectedPhone} />}
+        <TariffCard
+          tariffPrise={tariffPrise}
+          tariffData={tariffData}
+          tariffRemains={tariffRemains}
+          money={selectedPhone?.balance || 0}
+          idPhone={selectedPhone?.id || 0}
+        />
+      </main>
+    </div>
   );
 }
 

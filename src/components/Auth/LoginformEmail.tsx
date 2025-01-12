@@ -7,8 +7,9 @@ const LoginformEmail: React.FC = () => {
   const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<"email" | "code">("email");
+  const [step, setStep] = useState<"email" | "codeEmail" | "codeTG">("email");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [codeTG, setCodeTG] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -39,11 +40,11 @@ const LoginformEmail: React.FC = () => {
         return;
       }
       const sendCodeResponse = await axios.post(
-        "http://localhost:8080/auth/sendCode",
+        "http://localhost:8080/auth/sendCodeEmail",
         { email }
       );
       if (sendCodeResponse.status === 200) {
-        setStep("code");
+        setStep("codeEmail");
       } else {
         setError("Ошибка при отправке кода, попробуйте снова.");
       }
@@ -87,7 +88,7 @@ const LoginformEmail: React.FC = () => {
       const response = await axios.post(
         "http://localhost:8080/auth/checkCode",
         {
-          email,
+          source: email,
           code: code.join(""),
         }
       );
@@ -117,9 +118,51 @@ const LoginformEmail: React.FC = () => {
     }
   };
 
+  const handleCodeTG = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/auth/checkCode",
+        {
+          source: email,
+          code: codeTG,
+        }
+      );
+
+      if (response.status === 200) {
+        const { accessToken, token } = response.data;
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", token);
+        alert("Авторизация успешна!");
+
+        navigate("/");
+      } else {
+        setError("Неверный код, попробуйте снова.");
+      }
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        setError(
+          `Ошибка: ${error.response.status} - ${
+            error.response.data.message || "Неизвестная ошибка"
+          }`
+        );
+      } else {
+        setError("Произошла ошибка. Проверьте подключение.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedValue = event.clipboardData.getData("Text").toUpperCase();
+    const newCode = pastedValue.split("").slice(0, 6);
+    setCode(newCode.concat(Array(6 - newCode.length).fill("")));
+    event.preventDefault();
+  };
+
   return (
     <div className="mt-0">
-      {step === "email" ? (
+      {step === "email" && (
         <>
           <input
             type="email"
@@ -139,8 +182,8 @@ const LoginformEmail: React.FC = () => {
             {loading ? "Отправка..." : "Через почту"}
           </button>
           <a
-            className="flex mt-1 w-full bg-blue-500 rounded"
-            href="https://t.me/"
+            className="flex mt-1 w-full bg-blue-500 rounded cursor-pointer"
+            onClick={() => setStep("codeTG")}
           >
             <img src="/image/telegram.svg" alt="" className="ml-20" />
             <p className="pl-1 py-2 text-white rounded w-full">
@@ -148,7 +191,8 @@ const LoginformEmail: React.FC = () => {
             </p>
           </a>
         </>
-      ) : (
+      )}
+      {step === "codeEmail" && (
         <>
           <div className="mb-1 mt-3">
             <h2 className="text-xl font-bold">Дополнительная проверка</h2>
@@ -166,6 +210,7 @@ const LoginformEmail: React.FC = () => {
                   maxLength={1}
                   value={value}
                   onChange={(e) => handleCodeChange(e.target.value, index)}
+                  onPaste={handlePaste}
                   className="w-full h-10 text-center border-none text-lg bg-slate-200 focus:bg-white focus:outline-none"
                 />
                 <div
@@ -183,6 +228,38 @@ const LoginformEmail: React.FC = () => {
             className="mt-4 py-2 bg-green-600 text-white rounded w-full"
           >
             {loading ? "Проверка..." : "Проверить код"}
+          </button>
+        </>
+      )}
+      {step === "codeTG" && (
+        <>
+          <h2 className="text-xl font-bold">Дополнительная проверка</h2>
+          <p className="text-gray-600 text-sm mb-2">
+            Перейдите в телеграмм бота (@BillingAlpha_bot) и получите код для
+            авторизации
+          </p>
+          <p className="text-gray-600 text-sm mb-2">
+            Введите номер телефона и код из Telegram.
+          </p>
+          <input
+            type="text"
+            placeholder="+71234567890"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border px-2 rounded w-full mb-4"
+          />
+          <input
+            type="text"
+            placeholder="Введите код из Telegram"
+            value={codeTG}
+            onChange={(e) => setCodeTG(e.target.value)}
+            className="border px-2 rounded w-full"
+          />
+          <button
+            onClick={handleCodeTG}
+            className="mt-4 px-4 py-2 bg-green-600 text-white rounded w-full"
+          >
+            Продолжить
           </button>
         </>
       )}

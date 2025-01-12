@@ -2,11 +2,13 @@ import { ModelReplenishment } from "@/components/model/ModelReplenishment/ModelR
 import { Button } from "@/components/ui/button.tsx";
 import { useState } from "react";
 import { SubscribersCardProps } from "./types";
+import { ModuleHistoryMoney } from "@/components/model/ModuleHistoryMoney/ModuleHistoryMoney";
 
 const SubscribersCard: React.FC<SubscribersCardProps> = ({ phone }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false);
+  const [isOpenHistory, setIsOpenHistory] = useState<boolean>(false);
   return (
-    <div className="balanc ml-28 mr-20 relative">
+    <div className="balanc ml-28 mr-20 h-60 w-full relative lg:h-80 lg:w-72">
       <p className="phone-number text-xl pt-12 pl-8 text-white">
         {phone.number}
       </p>
@@ -14,18 +16,33 @@ const SubscribersCard: React.FC<SubscribersCardProps> = ({ phone }) => {
         <h2 className="balance-amount text-3xl text-white">
           {phone.balance.toFixed(2)} ₽
         </h2>
-        <Button
-          className="mt-3"
-          variant="destructive"
-          onClick={() => setIsOpen(true)}
-        >
-          Пополнить
-        </Button>
+        <div>
+          <Button
+            className="mt-3 w-50"
+            variant="destructive"
+            onClick={() => setIsOpenAdd(true)}
+          >
+            Пополнить
+          </Button>
+          <Button
+            className="mt-3 ml-1 w-10 h-10"
+            variant="destructive"
+            onClick={() => setIsOpenHistory(true)}
+          >
+            ₽
+          </Button>
+        </div>
 
         <ModelReplenishment
           phone={phone}
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          isOpen={isOpenAdd}
+          onClose={() => setIsOpenAdd(false)}
+        />
+
+        <ModuleHistoryMoney
+          phone={phone.id}
+          isOpen={isOpenHistory}
+          onClose={() => setIsOpenHistory(false)}
         />
       </div>
     </div>

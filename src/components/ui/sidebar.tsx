@@ -22,12 +22,6 @@ const SIDEBAR_ITEMS = [
     color: "#F59e0b",
     href: "finansInfo",
   },
-  {
-    name: "Журнал",
-    icon: Calendar,
-    color: "#6EE787",
-    href: "eventlog",
-  },
 ];
 
 const Sidebar = () => {
